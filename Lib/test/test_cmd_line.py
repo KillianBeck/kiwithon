@@ -73,6 +73,7 @@ class CmdLineTest(unittest.TestCase):
                 self.assertNotIn(b'-X dev', out)
                 self.assertIn(b'--update', out)
                 self.assertIn(b'--raw-update', out)
+                self.assertIn(b'--splash', out)
                 self.assertLess(len(lines), 50)
 
     @support.cpython_only
@@ -131,6 +132,22 @@ class CmdLineTest(unittest.TestCase):
     def test_help_not_colorized(self):
         rc, out, err = assert_python_ok("--help")
         self.assertNotIn(b"\x1b[", out)
+
+    @support.cpython_only
+    @support.force_not_colorized
+    def test_splash(self):
+        out = self.verify_valid_flag('--splash')
+        self.assertIn(b'Kiwithon', out)
+        self.assertIn(b'(@)', out)
+        self.assertNotIn(b'\x1b[', out)
+        out.decode('ascii')
+
+    @support.cpython_only
+    @support.force_colorized
+    def test_splash_colorized(self):
+        rc, out, err = assert_python_ok("--splash", FORCE_COLOR="1")
+        self.assertIn(b"\x1b[", out)
+        self.assertIn(b"Kiwithon", out)
 
     def test_optimize(self):
         self.verify_valid_flag('-O')

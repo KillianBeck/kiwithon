@@ -48,6 +48,7 @@ static const _PyOS_LongOption longopts[] = {
     {L"help-xoptions", 0, 4},
     {L"raw-update", 0, 5},
     {L"update", 0, 6},
+    {L"splash", 0, 7},
     {NULL, 0, -1},                     /* sentinel */
 };
 

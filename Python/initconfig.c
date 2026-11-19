@@ -434,6 +434,7 @@ static const char usage_help[] =
 "#L{--help-all}: print complete help information and exit\n"
 "#L{--raw-update}: pull Kiwithon repository, rebuild, and install\n"
 "#L{--update}: fetch and install the latest Kiwithon binary\n"
+"#L{--splash}: display the Kiwithon ASCII art splash screen and exit\n"
 "\n"
 "#h{Arguments:}\n"
 "#s{file}   : program read from script file\n"
@@ -3042,6 +3043,61 @@ config_complete_usage(const wchar_t* program)
    config_xoptions_usage();
 }
 
+static void
+config_splash(void)
+{
+    int colorize = _Py_can_colorize(stdout);
+    const char *title = colorize ? "\x1b[1;32m" : "";
+    const char *reset = colorize ? "\x1b[0m" : "";
+
+    static const char *const lines[] = {
+        "          .:=======:.",
+        "       .:=============-.",
+        "     .====:::::::::==(@)=:.",
+        "   .===::::::..:::::======--..",
+        "  .==:::;;:..  ..:====-.   .:==:.",
+        " .==::;;::. .::. ::====-.     .:==.",
+        " ==::;;::. .    . .:========.   .:+.",
+        " ==::;;::.        .::::::====.    `.",
+        " ==::;;::. .    . .:::::====.",
+        " .==:::;;:. .::. .::::::::===.",
+        "  .==:::;;::.. ..::::::::===.",
+        "   .===::::::::::::::::===.",
+        "     .====::::::::::====.",
+        "       .:=============:.",
+        "          .:=======:.",
+    };
+
+    putchar('\n');
+    for (size_t i = 0; i < sizeof(lines) / sizeof(lines[0]); i++) {
+        const char *line = lines[i];
+        if (!colorize) {
+            printf("%s\n", line);
+            continue;
+        }
+        for (const char *p = line; *p != '\0'; p++) {
+            char ch = *p;
+            if (ch == ' ') {
+                putchar(' ');
+            }
+            else if (ch == '@') {
+                printf("\x1b[1;37m@\x1b[0m");
+            }
+            else if (ch == ';') {
+                printf("\x1b[1;30m;\x1b[0m");
+            }
+            else if (ch == ':' || ch == '.') {
+                printf("\x1b[92m%c", ch);
+            }
+            else {
+                printf("\x1b[32m%c", ch);
+            }
+        }
+        printf("%s\n", reset);
+    }
+    printf("\n         %sKiwithon %s%s\n\n", title, PY_VERSION, reset);
+}
+
 
 /* Parse the command line arguments */
 static PyStatus
@@ -3143,6 +3199,11 @@ config_parse_cmdline(PyConfig *config, PyWideStringList *warnoptions,
 
         case 4:
             // --help-xoptions option
+            DEFER_OPTION(c);
+            break;
+
+        case 7:
+            // --splash option
             DEFER_OPTION(c);
             break;
 
@@ -3320,6 +3381,11 @@ _PyConfig_ProcessDeferredCmdlineOption(PyConfig *config)
     case 4:
         // help-xoptions
         config_xoptions_usage();
+        return 0;
+
+    case 7:
+        // splash
+        config_splash();
         return 0;
 
     case '_':
