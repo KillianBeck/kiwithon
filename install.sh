@@ -228,16 +228,34 @@ install_from_source() {
         fi
     fi
 
-    info "Configuring build (prefix: $PREFIX)..."
     (
         cd "$REPO_DIR"
         if [ ! -f "configure" ]; then
             die "configure script not found in $REPO_DIR"
         fi
-        ./configure --prefix="$PREFIX"
         if [ "$CLEAN_BUILD" -eq 1 ]; then
-            make clean
+            rm -f config.cache
+            if [ -f "Makefile" ]; then
+                make clean
+            fi
         fi
+
+        configured_prefix=""
+        if [ -f "Makefile" ]; then
+            configured_prefix="$(sed -n 's/^prefix=[[:space:]]*//p' Makefile | head -n 1)"
+        fi
+
+        if [ "$CLEAN_BUILD" -eq 0 ] \
+            && [ -f "Makefile" ] \
+            && [ -f "config.status" ] \
+            && [ "$configured_prefix" = "$PREFIX" ] \
+            && [ -z "$(find configure -prune -newer Makefile 2>/dev/null)" ]; then
+            info "Already configured for prefix $PREFIX; skipping ./configure."
+        else
+            info "Configuring build (prefix: $PREFIX)..."
+            ./configure -C -q --prefix="$PREFIX"
+        fi
+
         info "Compiling with $JOBS jobs..."
         make -j"$JOBS"
         info "Installing Kiwithon into $PREFIX..."
