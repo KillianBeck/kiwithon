@@ -1,11 +1,11 @@
 #!/bin/sh
 # Kiwithon Installer Script
-# One-liner: curl -fsSL https://raw.githubusercontent.com/Korayami/kiwithon/main/install.sh | sh
-# Source build: curl -fsSL https://raw.githubusercontent.com/Korayami/kiwithon/main/install.sh | sh -s -- --raw
+# One-liner: curl -fsSL https://raw.githubusercontent.com/KillianBeck/kiwithon/main/install.sh | sh
+# Source build: curl -fsSL https://raw.githubusercontent.com/KillianBeck/kiwithon/main/install.sh | sh -s -- --raw
 
 set -e
 
-REPO_DEFAULT="Korayami/kiwithon"
+REPO_DEFAULT="KillianBeck/kiwithon"
 REPO_URL_DEFAULT="https://github.com/${REPO_DEFAULT}.git"
 RELEASE_URL_DEFAULT="https://api.github.com/repos/${REPO_DEFAULT}/releases/latest"
 
@@ -65,8 +65,8 @@ Kiwithon Installer
 
 Usage:
   install.sh [options]
-  curl -fsSL https://raw.githubusercontent.com/Korayami/kiwithon/main/install.sh | sh
-  curl -fsSL https://raw.githubusercontent.com/Korayami/kiwithon/main/install.sh | sh -s -- [options]
+  curl -fsSL https://raw.githubusercontent.com/KillianBeck/kiwithon/main/install.sh | sh
+  curl -fsSL https://raw.githubusercontent.com/KillianBeck/kiwithon/main/install.sh | sh -s -- [options]
 
 Options:
   --prefix <dir>         Install prefix directory (default: /usr/local or ~/.local)

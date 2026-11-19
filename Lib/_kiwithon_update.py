@@ -24,7 +24,7 @@ import urllib.error
 import urllib.request
 from typing import Sequence
 
-DEFAULT_REPO = "Korayami/kiwithon"
+DEFAULT_REPO = "KillianBeck/kiwithon"
 DEFAULT_GIT_URL = f"https://github.com/{DEFAULT_REPO}.git"
 DEFAULT_RELEASE_API = f"https://api.github.com/repos/{DEFAULT_REPO}/releases/latest"
 
@@ -422,7 +422,7 @@ def main(raw: bool = False, argv: Sequence[str] | None = None) -> int:
         "--repo",
         type=str,
         default=None,
-        help="GitHub repo (e.g. Korayami/kiwithon) or git URL.",
+        help="GitHub repo (e.g. KillianBeck/kiwithon) or git URL.",
     )
     parser.add_argument(
         "--dry-run",
