@@ -213,11 +213,21 @@ install_from_source() {
 
     if [ -d "$REPO_DIR/.git" ]; then
         info "Updating existing checkout at $REPO_DIR..."
-        (cd "$REPO_DIR" && git fetch --all --prune)
-        if [ -n "$BRANCH" ]; then
-            (cd "$REPO_DIR" && git checkout "$BRANCH")
-        fi
-        (cd "$REPO_DIR" && git pull --ff-only)
+        (
+            cd "$REPO_DIR"
+            git remote set-url origin "$REPO_SRC" 2>/dev/null || true
+            git fetch --all --prune
+            if [ -n "$BRANCH" ]; then
+                git checkout "$BRANCH"
+            elif ! git symbolic-ref -q HEAD >/dev/null 2>&1; then
+                default_branch="$(git symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||' || true)"
+                if [ -z "$default_branch" ]; then
+                    default_branch="main"
+                fi
+                git checkout "$default_branch"
+            fi
+            git pull --ff-only
+        )
     else
         info "Cloning $REPO_SRC into $REPO_DIR..."
         mkdir -p "$(dirname "$REPO_DIR")"
